@@ -1,246 +1,122 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Jun 13, 2022 at 02:42 PM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 8.0.7
+-- EstateConnect consolidated SQL schema (rewritten)
+-- Creates database `EstateConn_db` and all tables used by the app.
+-- Safe to re-run; uses IF NOT EXISTS where appropriate.
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
--- Database: `shoppn`
---
+-- Create database
+CREATE DATABASE IF NOT EXISTS `EstateConn_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `EstateConn_db`;
 
--- --------------------------------------------------------
+-- Roles table
+CREATE TABLE IF NOT EXISTS `roles` (
+  `role_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `role_name` VARCHAR(50) NOT NULL,
+  UNIQUE KEY (`role_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table structure for table `brands`
---
+-- Seed roles
+INSERT INTO `roles` (`role_name`) VALUES
+  ('admin'), ('buyer'), ('seller')
+ON DUPLICATE KEY UPDATE role_name = VALUES(role_name);
 
-CREATE DATABASE IF NOT EXISTS `shoppn`;
-USE `shoppn`;
+-- Users table
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `role_id` INT UNSIGNED NOT NULL DEFAULT 2,
+  `full_name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `phone_number` VARCHAR(50),
+  `is_verified` TINYINT(1) DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`role_id`) REFERENCES `roles`(`role_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `brands` (
-  `brand_id` int(11) NOT NULL,
-  `brand_name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Property categories
+CREATE TABLE IF NOT EXISTS `property_categories` (
+  `cat_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `cat_name` VARCHAR(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
+-- Properties table
+CREATE TABLE IF NOT EXISTS `properties` (
+  `property_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `seller_id` INT UNSIGNED NOT NULL,
+  `cat_id` INT UNSIGNED DEFAULT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT,
+  `price` DECIMAL(12,2) DEFAULT 0,
+  `location` VARCHAR(255),
+  `media_type` ENUM('image','video','audio') DEFAULT 'image',
+  `status` ENUM('Available','Sold','Rented') DEFAULT 'Available',
+  `is_premium` TINYINT(1) DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`seller_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`cat_id`) REFERENCES `property_categories`(`cat_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table structure for table `cart`
---
+-- Property images
+CREATE TABLE IF NOT EXISTS `property_images` (
+  `image_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `property_id` INT UNSIGNED NOT NULL,
+  `image_path` VARCHAR(1024) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`property_id`) REFERENCES `properties`(`property_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `cart` (
-  `p_id` int(11) NOT NULL,
-  `ip_add` varchar(50) NOT NULL,
-  `c_id` int(11) DEFAULT NULL,
-  `qty` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Subscriptions table
+CREATE TABLE IF NOT EXISTS `subscriptions` (
+  `sub_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT UNSIGNED NOT NULL,
+  `plan_type` ENUM('Free','Premium') DEFAULT 'Free',
+  `start_date` DATE,
+  `end_date` DATE,
+  `status` ENUM('Active','Expired') DEFAULT 'Active',
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
+-- Verifications table
+CREATE TABLE IF NOT EXISTS `verifications` (
+  `ver_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT UNSIGNED NOT NULL,
+  `document_path` VARCHAR(1024),
+  `status` ENUM('Pending','Approved','Rejected') DEFAULT 'Pending',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table structure for table `categories`
---
+-- Cart / Shortlist table
+CREATE TABLE IF NOT EXISTS `cart` (
+  `cart_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT UNSIGNED NOT NULL,
+  `property_id` INT UNSIGNED NOT NULL,
+  `added_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `user_property_unique` (`user_id`,`property_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`property_id`) REFERENCES `properties`(`property_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `categories` (
-  `cat_id` int(11) NOT NULL,
-  `cat_name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Inquiries table
+CREATE TABLE IF NOT EXISTS `inquiries` (
+  `inq_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `property_id` INT UNSIGNED NOT NULL,
+  `from_user_id` INT UNSIGNED NOT NULL,
+  `message` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`property_id`) REFERENCES `properties`(`property_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`from_user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
--- Table structure for table `customer`
---
-
-CREATE TABLE `customer` (
-  `customer_id` int(11) NOT NULL,
-  `customer_name` varchar(100) NOT NULL,
-  `customer_email` varchar(50) NOT NULL,
-  `customer_pass` varchar(150) NOT NULL,
-  `customer_country` varchar(30) NOT NULL,
-  `customer_city` varchar(30) NOT NULL,
-  `customer_contact` varchar(15) NOT NULL,
-  `customer_image` varchar(100) DEFAULT NULL,
-  `user_role` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- Table structure for table `orderdetails`
---
-
-CREATE TABLE `orderdetails` (
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `qty` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- Table structure for table `orders`
---
-
-CREATE TABLE `orders` (
-  `order_id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `invoice_no` int(11) NOT NULL,
-  `order_date` date NOT NULL,
-  `order_status` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- Table structure for table `payment`
---
-
-CREATE TABLE `payment` (
-  `pay_id` int(11) NOT NULL,
-  `amt` double NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `currency` text NOT NULL,
-  `payment_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- Table structure for table `products`
---
-
-CREATE TABLE `products` (
-  `product_id` int(11) NOT NULL,
-  `product_cat` int(11) NOT NULL,
-  `product_brand` int(11) NOT NULL,
-  `product_title` varchar(200) NOT NULL,
-  `product_price` double NOT NULL,
-  `product_desc` varchar(500) DEFAULT NULL,
-  `product_image` varchar(100) DEFAULT NULL,
-  `product_keywords` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Indexes for dumped tables
---
-
--- Indexes for table `brands`
---
-ALTER TABLE `brands`
-  ADD PRIMARY KEY (`brand_id`);
-
--- Indexes for table `cart`
---
-ALTER TABLE `cart`
-  ADD KEY `p_id` (`p_id`),
-  ADD KEY `c_id` (`c_id`);
-
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`cat_id`);
-
--- Indexes for table `customer`
---
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`customer_id`),
-  ADD UNIQUE KEY `customer_email` (`customer_email`);
-
--- Indexes for table `orderdetails`
---
-ALTER TABLE `orderdetails`
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `product_id` (`product_id`);
-
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `customer_id` (`customer_id`);
-
--- Indexes for table `payment`
---
-ALTER TABLE `payment`
-  ADD PRIMARY KEY (`pay_id`),
-  ADD KEY `customer_id` (`customer_id`),
-  ADD KEY `order_id` (`order_id`);
-
--- Indexes for table `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`product_id`),
-  ADD KEY `product_cat` (`product_cat`),
-  ADD KEY `product_brand` (`product_brand`);
-
--- AUTO_INCREMENT for dumped tables
---
-
--- AUTO_INCREMENT for table `brands`
---
-ALTER TABLE `brands`
-  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- AUTO_INCREMENT for table `categories`
---
-ALTER TABLE `categories`
-  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- AUTO_INCREMENT for table `customer`
---
-ALTER TABLE `customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- AUTO_INCREMENT for table `payment`
---
-ALTER TABLE `payment`
-  MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
-
--- Constraints for dumped tables
---
-
--- Constraints for table `cart`
---
-ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`p_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`c_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- Constraints for table `orderdetails`
---
-ALTER TABLE `orderdetails`
-  ADD CONSTRAINT `orderdetails_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  ADD CONSTRAINT `orderdetails_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
-
--- Constraints for table `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`);
-
--- Constraints for table `payment`
---
-ALTER TABLE `payment`
-  ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
-  ADD CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
-
--- Constraints for table `products`
---
-ALTER TABLE `products`
-  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`product_cat`) REFERENCES `categories` (`cat_id`),
-  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`product_brand`) REFERENCES `brands` (`brand_id`);
+-- Helpful indexes
+CREATE INDEX IF NOT EXISTS idx_properties_location ON `properties` (`location`(100));
+CREATE INDEX IF NOT EXISTS idx_properties_price ON `properties` (`price`);
 
 COMMIT;
 

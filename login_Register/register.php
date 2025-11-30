@@ -1,5 +1,6 @@
 <?php
 // login/register.php
+if (session_status() === PHP_SESSION_NONE) session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,8 +54,14 @@
                             <li><a href="../index.php">Home</a></li>
                             <li><a href="../properties.php">Properties</a></li>
                             <li><a href="../services.php">Services</a></li>
-                            <li><a href="../about.php">About</a></li>
-                            <li><a href="../contact.php">Contact Us</a></li>
+                            <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                                <li class="nav-item"><a href="login_Register/profile.php">Hello, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></a></li>
+                                <li class="cta-button"><a href="login_Register/logout.php" class="btn btn-outline-danger">Logout</a></li>
+                                <li class="cta-button"><a href="login_Register/profile_edit.php" class="btn btn-success">Edit Profile</a></li>
+                            <?php else: ?>
+                                <li class="cta-button"><a href="login.php" class="btn btn-success">Login</a></li>
+                                <li class="cta-button"><a href="register.php" class="btn btn-outline-success">Register</a></li>
+                            <?php endif; ?>
                         </ul>
 
                         <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"><span></span></a>
@@ -330,41 +337,9 @@
 
         <div class="site-footer">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Contact</h3>
-                            <address>21 Osu Oxford St., Accra</address>
-                            <ul class="list-unstyled links">
-                                <li><a href="tel:+233201234567">+233 (20) 123-4567</a></li>
-                                <li><a href="tel:+233505123456">+233 (50) 512-3456</a></li>
-                                <li><a href="mailto:info@mydomain.com">info@mydomain.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Sources</h3>
-                            <ul class="list-unstyled float-start links">
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Services</a></li>
-                                <li><a href="#">Vision</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Links</h3>
-                            <ul class="list-unstyled links">
-                                <li><a href="#">Our Vision</a></li>
-                                <li><a href="#">About us</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
                 <div class="row mt-5">
                     <div class="col-12 text-center">
-                        <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved.</p>
+                        <p>Copyright &copy; 2025. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>
@@ -449,8 +424,9 @@
 
             try {
                 // Post to action. Ensure this path is correct in your project.
-                const res = await fetch('../actions/register_customer_action.php', {
+                const res = await fetch('../actions/register_action.php', {
                     method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     body: fd
                 });
 

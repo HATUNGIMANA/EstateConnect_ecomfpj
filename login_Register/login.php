@@ -1,3 +1,4 @@
+<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,8 +53,15 @@
                             <li><a href="../index.php">Home</a></li>
                             <li><a href="../properties.php">Properties</a></li>
                             <li><a href="../services.php">Services</a></li>
-                            <li><a href="../about.php">About</a></li>
-                            <li><a href="../contact.php">Contact Us</a></li>
+                            <!-- About and Contact removed from navbar -->
+                            <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                                <li class="nav-item"><a href="profile.php">Hello, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></a></li>
+                                <li class="cta-button"><a href="logout.php" class="btn btn-outline-danger">Logout</a></li>
+                                <li class="cta-button"><a href="profile_edit.php" class="btn btn-success">Edit Profile</a></li>
+                            <?php else: ?>
+                                <li class="cta-button"><a href="login.php" class="btn btn-success">Login</a></li>
+                                <li class="cta-button"><a href="register.php" class="btn btn-outline-success">Register</a></li>
+                            <?php endif; ?>
                         </ul>
 
                         <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"><span></span></a>
@@ -72,18 +80,19 @@
                             </div>
                             <div class="card-body">
                         <!-- Alert Messages (To be handled by backend) -->
-                        <!-- Example:
-                        <div class="alert alert-info text-center">Login successful!</div>
-                        -->
+                        <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+                        <?php if (!empty($_SESSION['login_error'])): ?>
+                            <div class="alert alert-danger text-center"><?php echo htmlspecialchars($_SESSION['login_error']); unset($_SESSION['login_error']); ?></div>
+                        <?php endif; ?>
 
-                                                <form method="POST" action="" class="mt-4" id="login-form">
+                                                <form method="POST" action="../actions/login_action.php" class="mt-4" id="login-form">
                                                         <div class="mb-3">
-                                                                <label for="customer_email" class="form-label">Email <i class="fa fa-envelope"></i></label>
-                                                                <input type="email" class="form-control" id="customer_email" name="customer_email" placeholder="Enter your email address" required>
+                                                        <label for="customer_email" class="form-label">Email <i class="fa fa-envelope"></i></label>
+                                                        <input type="email" class="form-control" id="customer_email" name="email" placeholder="Enter your email address" required>
                                                         </div>
                                                         <div class="mb-4">
-                                                                <label for="customer_pass" class="form-label">Password <i class="fa fa-lock"></i></label>
-                                                                <input type="password" class="form-control" id="customer_pass" name="customer_pass" placeholder="Enter your password" required>
+                                                        <label for="customer_pass" class="form-label">Password <i class="fa fa-lock"></i></label>
+                                                        <input type="password" class="form-control" id="customer_pass" name="password" placeholder="Enter your password" required>
                                                         </div>
                                                         <button type="submit" class="btn btn-custom w-100" id="login-submit-btn">
                                                                 <i class="fas fa-sign-in-alt me-2"></i>Login
@@ -101,45 +110,12 @@
 
         <div class="site-footer">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Contact</h3>
-                            <address>21 Osu Oxford St., Accra</address>
-                            <ul class="list-unstyled links">
-                                <li><a href="tel:+233201234567">+233 (20) 123-4567</a></li>
-                                <li><a href="tel:+233505123456">+233 (50) 512-3456</a></li>
-                                <li><a href="mailto:info@mydomain.com">info@mydomain.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Sources</h3>
-                            <ul class="list-unstyled float-start links">
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Services</a></li>
-                                <li><a href="#">Vision</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Links</h3>
-                            <ul class="list-unstyled links">
-                                <li><a href="#">Our Vision</a></li>
-                                <li><a href="#">About us</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
                 <div class="row mt-5">
                     <div class="col-12 text-center">
-                        <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved.</p>
+                        <p>Copyright &copy; 2025. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Preloader -->
         <div id="overlayer"></div>
