@@ -31,6 +31,7 @@
             .site-section .container{padding-top:30px;padding-bottom:48px}
         </style>
     </head>
+    
     <body>
 
         <div class="site-mobile-menu site-navbar-target">
@@ -71,7 +72,7 @@
                                                 <h4><i class="fas fa-user-plus me-2"></i>Customer Registration</h4>
                                         </div>
                                         <div class="card-body">
-                        <!-- Note: form has no action; submission handled by JS -->
+                        <!-- Note: form has not any action; submission handled by JS -->
                         <form id="register-form" class="mt-4" novalidate>
                             <div class="mb-3">
                                 <label for="customer_name" class="form-label">Full Name <i class="fa fa-user"></i></label>
