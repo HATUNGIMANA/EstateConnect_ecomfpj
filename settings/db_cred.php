@@ -6,9 +6,10 @@ $env_user = getenv('DB_USERNAME') ?: getenv('DB_USER');
 $env_pass = getenv('DB_PASSWORD') ?: getenv('DB_PASS');
 
 $finalHost = $env_host !== false && $env_host !== null ? $env_host : 'localhost';
-$finalUser = $env_user !== false && $env_user !== null ? $env_user : 'root';
-$finalPass = $env_pass !== false && $env_pass !== null ? $env_pass : '';
-$finalDB   = $env_db !== false && $env_db !== null ? $env_db : 'EstateConn_db';
+// Hosted school defaults (fallbacks) — override with environment variables on the server if different
+$finalUser = $env_user !== false && $env_user !== null ? $env_user : 'eric.hatungimana';
+$finalPass = $env_pass !== false && $env_pass !== null ? $env_pass : '6100202629';
+$finalDB   = $env_db !== false && $env_db !== null ? $env_db : 'ecommerce_2025A_eric_hatungimana';
 
 if (!defined('SERVER'))   define('SERVER', $finalHost);
 if (!defined('USERNAME')) define('USERNAME', $finalUser);
