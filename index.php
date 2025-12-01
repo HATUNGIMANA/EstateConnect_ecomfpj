@@ -29,6 +29,18 @@ function random_price_display() {
     <link rel="stylesheet" href="css/style.css" />
 
     <title>EstateConnect &mdash; Secure Real Estate E-commerce Platform</title>
+    <style>
+      /* Homepage typography scale-down overrides */
+      body { font-size: 14px; }
+      .hero .heading { font-size: 28px !important; line-height: 1.2 !important; }
+      .narrow-w.form-search .form-control { font-size: 14px; }
+      .section .heading { font-size: 20px !important; }
+      .property-content .price span { font-size: 16px !important; }
+      .property-content .caption, .property-content .city, .property-content .text-black-50 { font-size: 13px !important; }
+      .box-feature h3 { font-size: 16px !important; }
+      .testimonial .h5 { font-size: 14px !important; }
+      .site-footer p { font-size: 13px; }
+    </style>
   </head>
   <body>
     <div class="site-mobile-menu site-navbar-target">
