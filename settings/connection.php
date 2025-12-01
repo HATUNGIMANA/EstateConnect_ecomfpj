@@ -67,6 +67,14 @@ try {
         $pdo = new PDO($dsn, USERNAME, PASSWD, $options);
     } catch (PDOException $inner) {
         error_log('DB setup/connection failed: ' . $inner->getMessage());
+        // If this is an AJAX request, return JSON so the client can handle it
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        if ($isAjax) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Database connection failed on server. Contact administrator.']);
+            exit;
+        }
         // Provide a slightly more actionable message for local devs
         die('Database connection failed. Please ensure MySQL is running and import `db/db_fin_project.sql`. Details logged.');
     }
