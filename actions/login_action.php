@@ -11,10 +11,29 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Helper to send JSON responses for AJAX requests
+function send_json($data, $status = 200) {
+    http_response_code($status);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+// Simple server-side error logger (append)
+function log_server_error($msg) {
+    $logDir = __DIR__ . '/../logs';
+    if (!is_dir($logDir)) @mkdir($logDir, 0755, true);
+    $file = $logDir . '/server_errors.log';
+    error_log("[".date('c')."] " . $msg . "\n", 3, $file);
+}
+
 $email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
 $password = $_POST['password'] ?? '';
 
 if (!$email || !$password) {
+    // If AJAX, return JSON
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    if ($isAjax) send_json(['success' => false, 'message' => 'Please provide email and password.'], 400);
     $_SESSION['login_error'] = 'Please provide email and password.';
     header('Location: ../login_Register/login.php');
     exit;
@@ -48,13 +67,28 @@ if ($email === $adminEmail && $password === $adminPass) {
     $_SESSION['user_id'] = 'admin';
     $_SESSION['role'] = 1;
     $_SESSION['is_verified'] = 1;
+    // If AJAX request, return JSON so client can react
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    if ($isAjax) send_json(['success' => true, 'redirect' => '../admin/admin_dashboard.php'], 200);
     header('Location: ../admin/admin_dashboard.php');
     exit;
 }
 
 // verify credentials against DB
-$user = verify_user_password($email, $password);
+try {
+    $user = verify_user_password($email, $password);
+} catch (Exception $e) {
+    log_server_error('Login verify error: ' . $e->getMessage());
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    if ($isAjax) send_json(['success' => false, 'message' => 'Server error during authentication.'], 500);
+    $_SESSION['login_error'] = 'Server error during authentication.';
+    header('Location: ../login_Register/login.php');
+    exit;
+}
+
 if (!$user) {
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    if ($isAjax) send_json(['success' => false, 'message' => 'Invalid credentials.'], 401);
     $_SESSION['login_error'] = 'Invalid credentials.';
     header('Location: ../login_Register/login.php');
     exit;
