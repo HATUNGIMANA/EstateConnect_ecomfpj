@@ -54,16 +54,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           <div class="site-navigation">
             <a href="index.php" class="logo m-0 float-start">EstateConnect</a>
 
-            <ul
-              class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end"
-            >
+            <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
               <li><a href="index.php">Home</a></li>
               <li class="has-children">
                 <a href="properties.php">Properties</a>
                 <ul class="dropdown">
-                  <li><a href="#">Buy</a></li>
-                  <li><a href="#">Sell</a></li>
-                  <!-- Removed extra 'Dropdown' submenu -->
+                  <li><a href="http://localhost/Ecommerce/Final_Project/EstateConnect/properties.php">Buy</a></li>
+                  <li><a href="actions/add_property.php">Sell</a></li>
                 </ul>
               </li>
               <li class="active"><a href="services.php">Services</a></li>
@@ -71,6 +68,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <li>
                 <a href="cart.php"><span class="icon-shopping_cart"></span> Cart<?php if($cart_count>0) echo ' (' . $cart_count . ')'; ?></a>
               </li>
+              <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                <li class="cta-button"><a href="login_Register/logout.php" class="btn btn-outline-danger" onclick="return confirm('Do you really want to log out?');">Logout</a></li>
+                <li class="cta-button"><a href="login_Register/profile_edit.php" class="btn btn-success">Edit Profile</a></li>
+              <?php else: ?>
+                <li class="cta-button"><a href="login_Register/login.php" class="btn btn-success">Login</a></li>
+                <li class="cta-button"><a href="login_Register/register.php" class="btn btn-outline-success">Register</a></li>
+              <?php endif; ?>
             </ul>
 
             <a
@@ -93,7 +97,11 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
       <div class="container">
         <div class="row justify-content-center align-items-center">
           <div class="col-lg-9 text-center mt-5">
-            <h1 class="heading" data-aos="fade-up">Services</h1>
+            <h1 class="heading" data-aos="fade-up">Mission</h1>
+            <p class="text-white-50" data-aos="fade-up" data-aos-delay="100">To become Ghana’s most reliable, affordable, and accessible e-commerce platform for real estate transactions.</p>
+
+            <h1 class="heading mt-3" data-aos="fade-up">Vision</h1>
+            <p class="text-white-50" data-aos="fade-up" data-aos-delay="150">To connect property owners, real estate agents, and customers through a secure, verified, and user-friendly e-commerce platform.</p>
 
             <nav
               aria-label="breadcrumb"
@@ -106,7 +114,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   class="breadcrumb-item active text-white-50"
                   aria-current="page"
                 >
-                  Services
+                  Mission &amp; Vision
                 </li>
               </ol>
             </nav>
@@ -125,10 +133,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 Quality Properties
               </h3>
               <p class="text-black-50">
-                Far far away, behind the word mountains, far from the countries
-                Vokalia and Consonantia, there live the blind texts.
+                Listings on EstateConnect are rigorously verified to ensure credible ownership and accurate documentation. Our streamlined processes remove uncertainty so buyers and sellers transact with confidence.
               </p>
-              <p><a href="#" class="learn-more">Read more</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
           <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
@@ -136,10 +143,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <span class="flaticon-house-2 mb-4 d-block-3"></span>
               <h3 class="text-black mb-3 font-weight-bold">Top Rated Agent</h3>
               <p class="text-black-50">
-                Far far away, behind the word mountains, far from the countries
-                Vokalia and Consonantia, there live the blind texts.
+                Our partner agents are vetted and supported by EstateConnect tools to deliver smooth communications and secure transaction handling from listing to closing.
               </p>
-              <p><a href="#" class="learn-more">Read more</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
           <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
@@ -149,10 +155,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 Property for Sale
               </h3>
               <p class="text-black-50">
-                Far far away, behind the word mountains, far from the countries
-                Vokalia and Consonantia, there live the blind texts.
+                Every property for sale includes clear title references and transaction support so buyers can progress from offer to completion with minimal friction.
               </p>
-              <p><a href="#" class="learn-more">Read more</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
           <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
@@ -160,10 +165,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <span class="flaticon-house-3 mb-4 d-block-1"></span>
               <h3 class="text-black mb-3 font-weight-bold">House for Sale</h3>
               <p class="text-black-50">
-                Far far away, behind the word mountains, far from the countries
-                Vokalia and Consonantia, there live the blind texts.
+                Residential listings provide inspection summaries and verified ownership details—helping you find a home backed by clear documentation and trusted support.
               </p>
-              <p><a href="#" class="learn-more">Read more</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
 
@@ -224,7 +228,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
         <div class="row mb-5 align-items-center">
           <div class="col-md-6">
             <h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">
-              Customer Says
+              What Our Satisfied Customers Say:
             </h2>
           </div>
           <div class="col-md-6 text-md-end">
@@ -243,11 +247,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           <div class="testimonial-slider">
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_1-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/agent1.jpg" alt="James Smith" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -258,23 +258,16 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">James Smith</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "EstateConnect's agents were knowledgeable and clear. The verification reports helped me make an informed decision. Closing was smooth and stress-free."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
+                
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_2-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/agent2.jpeg" alt="Mike Houston" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -285,23 +278,15 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">Mike Houston</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "Transparent pricing and reliable documentation made all the difference. I felt supported through the negotiation. Excellent service from start to finish."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_3-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/agent3.jpg" alt="Cameron Webster" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -312,23 +297,15 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">Cameron Webster</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "The platform reduced uncertainty around ownership. Inspections and title summaries were thorough. A trustworthy marketplace I can rely on."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_4-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/male_silhouette.png" alt="Customer - Dave Smith" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -339,13 +316,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">Dave Smith</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "Professional agents and clear processes made my purchase painless. I closed without surprises. I would use EstateConnect again."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
           </div>

@@ -3,29 +3,23 @@ session_start();
 if (!isset($_SESSION['cart'])) { $_SESSION['cart'] = []; }
 $cart_count = 0;
 foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it['qty'] : 0; }
+// Helper to produce a random price between 10,000 and 50,000 GHS
+function random_price_display() {
+  return 'GHS ' . number_format(rand(10000, 50000));
+}
 ?>
-<!-- /*
-* Template Name: EstateConnect
-* Template Author: Untree.co
-* Template URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/ -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="Untree.co" />
-
-    <meta name="description" content="" />
-    <meta name="keywords" content="bootstrap, bootstrap5" />
+    <meta name="author" content="EstateConnect" />
+    <meta name="description" content="EstateConnect - Secure Real Estate Marketplace" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="fonts/icomoon/style.css" />
     <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css" />
@@ -34,9 +28,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
     <link rel="stylesheet" href="css/aos.css" />
     <link rel="stylesheet" href="css/style.css" />
 
-    <title>
-      EstateConnect &mdash; Secure Real Estate E-commerce Platform
-    </title>
+    <title>EstateConnect &mdash; Secure Real Estate E-commerce Platform</title>
   </head>
   <body>
     <div class="site-mobile-menu site-navbar-target">
@@ -54,28 +46,22 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           <div class="site-navigation">
             <a href="index.php" class="logo m-0 float-start">EstateConnect</a>
 
-            <ul
-              class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end"
-            >
+            <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
               <li class="active"><a href="index.php">Home</a></li>
               <li class="has-children">
                 <a href="properties.php">Properties</a>
                 <ul class="dropdown">
-                  <li><a href="#">Buy</a></li>
-                  <li><a href="#">Sell</a></li>
-                  <!-- Removed extra 'Dropdown' submenu -->
+                  <li><a href="http://localhost/Ecommerce/Final_Project/EstateConnect/properties.php">Buy</a></li>
+                  <li><a href="actions/add_property.php">Sell</a></li>
                 </ul>
               </li>
               <li><a href="services.php">Services</a></li>
-              <!-- About and Contact removed from navbar -->
               <li>
                 <a href="cart.php"><span class="icon-shopping_cart"></span> Cart<?php if($cart_count>0) echo ' (' . $cart_count . ')'; ?></a>
               </li>
               <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
-                <li class="nav-item"><a href="login_Register/profile.php" class="">Hello, <?php echo htmlspecialchars(
-                    $_SESSION['user']['name'] ?? ($_SESSION['user']['full_name'] ?? 'User')
-                ); ?></a></li>
-                <li class="cta-button"><a href="login_Register/logout.php" class="btn btn-outline-danger">Logout</a></li>
+                <li class="nav-item"><span class="nav-hello"><?php echo htmlspecialchars($_SESSION['user']['name'] ?? ($_SESSION['user']['full_name'] ?? 'User')); ?></span></li>
+                <li class="cta-button"><a href="login_Register/logout.php" class="btn btn-outline-danger" onclick="return confirm('Do you really want to log out?');">Logout</a></li>
                 <li class="cta-button"><a href="login_Register/profile_edit.php" class="btn btn-success">Edit Profile</a></li>
               <?php else: ?>
                 <li class="cta-button"><a href="login_Register/login.php" class="btn btn-success">Login</a></li>
@@ -83,14 +69,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <?php endif; ?>
             </ul>
 
-            <a
-              href="#"
-              class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"
-              data-toggle="collapse"
-              data-target="#main-navbar"
-            >
-              <span></span>
-            </a>
+            <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar"><span></span></a>
           </div>
         </div>
       </div>
@@ -98,38 +77,21 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
 
     <div class="hero">
       <div class="hero-slide">
-        <div
-          class="img overlay"
-          style="background-image: url('images/hero_bg_3.jpg')"
-        ></div>
-        <div
-          class="img overlay"
-          style="background-image: url('images/hero_bg_2.jpg')"
-        ></div>
-        <div
-          class="img overlay"
-          style="background-image: url('images/hero_bg_1.jpg')"
-        ></div>
+        <div class="img overlay" style="background-image: url('images/hero_bg_3.jpg')"></div>
+        <div class="img overlay" style="background-image: url('images/hero_bg_2.jpg')"></div>
+        <div class="img overlay" style="background-image: url('images/hero_bg_1.jpg')"></div>
       </div>
 
       <div class="container">
         <div class="row justify-content-center align-items-center">
           <div class="col-lg-9 text-center">
-            <h1 class="heading" data-aos="fade-up">
-              Easiest way to find your dream home
-            </h1>
-            <form
-              action="#"
-              class="narrow-w form-search d-flex align-items-stretch mb-3"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <input
-                type="text"
-                class="form-control px-4"
-                placeholder="Your city or area. e.g. Accra"
-              />
-              <button type="submit" class="btn btn-primary">Search</button>
+            <h1 class="heading" data-aos="fade-up">Welcome to EstateConnect, where seamless transactions meet trust verified by the Ghana Lands Commission. We eliminate fraud by ensuring credible ownership for every listing on our platform. Find your dream home safely and effortlessly.</h1>
+
+            <form action="#" class="narrow-w form-search mb-3" data-aos="fade-up" data-aos-delay="200">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Your city or area. e.g. Accra" />
+                <button class="btn btn-primary" type="submit"><span class="icon-search me-2"></span>Search</button>
+              </div>
             </form>
           </div>
         </div>
@@ -140,382 +102,118 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
       <div class="container">
         <div class="row mb-5 align-items-center">
           <div class="col-lg-6">
-            <h2 class="font-weight-bold text-primary heading">
-              Popular Properties
-            </h2>
+            <h2 class="font-weight-bold text-primary heading">Popular Properties</h2>
           </div>
           <div class="col-lg-6 text-lg-end">
-            <p>
-              <a
-                href="#"
-                target="_blank"
-                class="btn btn-primary text-white py-3 px-4"
-                >View all properties</a
-              >
-            </p>
+            <p><a href="http://localhost/Ecommerce/Final_Project/EstateConnect/properties.php" class="btn btn-primary text-white py-3 px-4">View all properties</a></p>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="property-slider-wrap">
-              <div class="property-slider">
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_1.jpg" alt="Image" class="img-fluid" />
-                  </a>
 
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >21 Osu Oxford St.</span
-                      >
-                      <span class="city d-block mb-3">Accra, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
+        <div class="row g-4">
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up">
+            <div class="property-item">
+              <a href="property-single.php?id=1" class="img"><img src="images/img_1.jpg" alt="Image" class="img-fluid" /></a>
+              <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
+                <div>
+                  <span class="d-block mb-2 text-black-50">21 Osu Oxford St.</span>
+                  <span class="city d-block mb-3">Accra, Ghana</span>
+                  <div class="specs d-flex mb-4">
+                    <span class="d-block d-flex align-items-center me-3"><span class="icon-bed me-2"></span><span class="caption">2 beds</span></span>
+                    <span class="d-block d-flex align-items-center"><span class="icon-bath me-2"></span><span class="caption">2 baths</span></span>
                   </div>
+                  <a href="property-single.php?id=1" class="btn btn-primary py-2 px-3">See details</a>
                 </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_2.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >14 Kejetia Rd.</span
-                      >
-                      <span class="city d-block mb-3">Kumasi, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_3.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >7 Tamale Rd., Sakasaka</span
-                      >
-                      <span class="city d-block mb-3">Tamale, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_4.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >44 Beach Rd., Dixcove</span
-                      >
-                      <span class="city d-block mb-3">Takoradi, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_5.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >10 Cape Coast St.</span
-                      >
-                      <span class="city d-block mb-3">Cape Coast, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_6.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >8 Tema Comm. Rd.</span
-                      >
-                      <span class="city d-block mb-3">Tema, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_7.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >12 Sunyani Rd.</span
-                      >
-                      <span class="city d-block mb-3">Sunyani, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-
-                <div class="property-item">
-                  <a href="property-single.php" class="img">
-                    <img src="images/img_8.jpg" alt="Image" class="img-fluid" />
-                  </a>
-
-                  <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50"
-                        >6 Ho Rd.</span
-                      >
-                      <span class="city d-block mb-3">Ho, Ghana</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.php"
-                        class="btn btn-primary py-2 px-3"
-                        >See details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-                <!-- .item -->
-              </div>
-
-              <div
-                id="property-nav"
-                class="controls"
-                tabindex="0"
-                aria-label="Carousel Navigation"
-              >
-                <span
-                  class="prev"
-                  data-controls="prev"
-                  aria-controls="property"
-                  tabindex="-1"
-                  >Prev</span
-                >
-                <span
-                  class="next"
-                  data-controls="next"
-                  aria-controls="property"
-                  tabindex="-1"
-                  >Next</span
-                >
               </div>
             </div>
           </div>
+
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up">
+            <div class="property-item">
+              <a href="property-single.php?id=2" class="img"><img src="images/img_2.jpg" alt="Image" class="img-fluid" /></a>
+              <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
+                <div>
+                  <span class="d-block mb-2 text-black-50">14 Kejetia Rd.</span>
+                  <span class="city d-block mb-3">Kumasi, Ghana</span>
+                  <div class="specs d-flex mb-4">
+                    <span class="d-block d-flex align-items-center me-3"><span class="icon-bed me-2"></span><span class="caption">2 beds</span></span>
+                    <span class="d-block d-flex align-items-center"><span class="icon-bath me-2"></span><span class="caption">2 baths</span></span>
+                  </div>
+                  <a href="property-single.php?id=2" class="btn btn-primary py-2 px-3">See details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up">
+            <div class="property-item">
+              <a href="property-single.php?id=3" class="img"><img src="images/img_3.jpg" alt="Image" class="img-fluid" /></a>
+              <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
+                <div>
+                  <span class="d-block mb-2 text-black-50">7 Tamale Rd., Sakasaka</span>
+                  <span class="city d-block mb-3">Tamale, Ghana</span>
+                  <div class="specs d-flex mb-4">
+                    <span class="d-block d-flex align-items-center me-3"><span class="icon-bed me-2"></span><span class="caption">2 beds</span></span>
+                    <span class="d-block d-flex align-items-center"><span class="icon-bath me-2"></span><span class="caption">2 baths</span></span>
+                  </div>
+                  <a href="property-single.php?id=3" class="btn btn-primary py-2 px-3">See details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <section class="features-1">
+    <div class="section">
       <div class="container">
-        <div class="row">
-          <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="row g-4">
+          <div class="col-12 col-lg-3" data-aos="fade-up">
             <div class="box-feature">
               <span class="flaticon-house"></span>
               <h3 class="mb-3">Our Properties</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates, accusamus.
+                EstateConnect curates listings that are verified against Ghana Lands Commission records and other trusted sources. Each property is screened for ownership credibility and clear documentation so buyers can trust what they see.
               </p>
-              <p><a href="#" class="learn-more">Learn More</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
-          <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
+
+          <div class="col-12 col-lg-3" data-aos="fade-up" data-aos-delay="100">
             <div class="box-feature">
               <span class="flaticon-building"></span>
               <h3 class="mb-3">Property for Sale</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates, accusamus.
+                Discover vetted properties across Ghana with transparent pricing and clear title information. Our process simplifies buying by surfacing reliable documentation and step-by-step guidance.
               </p>
-              <p><a href="#" class="learn-more">Learn More</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
-          <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+
+          <div class="col-12 col-lg-3" data-aos="fade-up" data-aos-delay="200">
             <div class="box-feature">
               <span class="flaticon-house-3"></span>
               <h3 class="mb-3">Real Estate Agent</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates, accusamus.
+                Our agents are background-checked and verified partners who facilitate smooth, transparent transactions. They help coordinate inspections, documentation, and secure payment flows for a frictionless experience.
               </p>
-              <p><a href="#" class="learn-more">Learn More</a></p>
+              <p><a href="services.php" class="learn-more">Learn More</a></p>
             </div>
           </div>
-          <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
-            <div class="box-feature">
-              <span class="flaticon-house-1"></span>
-              <h3 class="mb-3">House for Sale</h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates, accusamus.
-              </p>
-              <p><a href="#" class="learn-more">Learn More</a></p>
-            </div>
-          </div>
+
         </div>
       </div>
-    </section>
+    </div>
 
     <div class="section sec-testimonials">
       <div class="container">
         <div class="row mb-5 align-items-center">
           <div class="col-md-6">
             <h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">
-              Customer Says
+              Hear from Our Satisfied Customers:
             </h2>
           </div>
           <div class="col-md-6 text-md-end">
@@ -534,11 +232,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           <div class="testimonial-slider">
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_1-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/male_silhouette.png" alt="Kofi Mensah" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -549,23 +243,15 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">Kofi Mensah</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "EstateConnect made buying my home straightforward. The ownership verification gave me confidence to proceed. The agent support was responsive and professional."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_2-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/female_silhouette.png" alt="Nana Ama" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -573,26 +259,18 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
                 </div>
-                <h3 class="h5 text-primary mb-4">Kwame Adu</h3>
+                <h3 class="h5 text-primary mb-4">Nana Ama</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "I completed my purchase faster than expected thanks to clear documentation. Their verification process eliminated fraud concerns. Highly recommended for anyone buying property in Ghana."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_3-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/male_silhouette.png" alt="Kojo Asante" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -603,23 +281,15 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <h3 class="h5 text-primary mb-4">Kojo Asante</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "Listing my property was easy and secure. The platform's verification increased buyer trust. The payment process felt safe and reliable."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
 
             <div class="item">
               <div class="testimonial">
-                <img
-                  src="images/person_4-min.jpg"
-                  alt="Image"
-                  class="img-fluid rounded-circle w-25 mb-4"
-                />
+                <img src="images/female_silhouette.png" alt="Customer - Maame Yaa Abena" class="img-fluid rounded-circle w-25 mb-4" />
                 <div class="rate">
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
@@ -627,16 +297,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   <span class="icon-star text-warning"></span>
                   <span class="icon-star text-warning"></span>
                 </div>
-                <h3 class="h5 text-primary mb-4">Yaw Owusu</h3>
+                <h3 class="h5 text-primary mb-4">Maame Yaa Abena</h3>
                 <blockquote>
                   <p>
-                    &ldquo;Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at the
-                    coast of the Semantics, a large language ocean.&rdquo;
+                    "Great experience from viewing to closing. The team walked me through title checks and next steps. I felt protected every step of the way."
                   </p>
                 </blockquote>
-                <p class="text-black-50">Designer, Co-founder</p>
               </div>
             </div>
           </div>
@@ -652,8 +318,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               Let's find home that's perfect for you
             </h2>
             <p class="text-black-50">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-              enim pariatur similique debitis vel nisi qui reprehenderit.
+              EstateConnect connects verified listings with trusted agents to make finding and purchasing a home straightforward. Our verification-first approach and local partnerships ensure a secure, transparent experience for buyers across Ghana.
             </p>
           </div>
         </div>
@@ -669,10 +334,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <span class="icon-home2"></span>
               </span>
               <div class="feature-text">
-                <h3 class="heading">2M Properties</h3>
+                <h3 class="heading"> 550K+ Properties</h3>
                 <p class="text-black-50">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Nostrum iste.
+                  A growing nationwide inventory of vetted listings—curated to surface quality homes with clear documentation and verified ownership records.
                 </p>
               </div>
             </div>
@@ -684,8 +348,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <div class="feature-text">
                 <h3 class="heading">Top Rated Agents</h3>
                 <p class="text-black-50">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Nostrum iste.
+                  Our agent network is selected for professionalism and proven track records; they use EstateConnect tools to guide buyers through inspections, documentation, and closing.
                 </p>
               </div>
             </div>
@@ -697,8 +360,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <div class="feature-text">
                 <h3 class="heading">Legit Properties</h3>
                 <p class="text-black-50">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Nostrum iste.
+                  We partner directly with the Ghana Lands Commission to verify ownership and reduce fraud—so every listing marked as verified has credible title information and supporting documentation.
                 </p>
               </div>
             </div>
@@ -761,13 +423,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
       <div class="row justify-content-center footer-cta" data-aos="fade-up">
         <div class="col-lg-7 mx-auto text-center">
           <h2 class="mb-4">Be a part of our growing real state agents</h2>
-          <p>
+            <p>
             <a
-              href="#"
-              target="_blank"
+              href="agent_register.php"
               class="btn btn-primary text-white py-3 px-4"
-              >Apply for Real Estate agent</a
-            >
+              >Apply for Real Estate agent</a>
+            <a href="#" id="upgradePremiumBtn" class="btn btn-warning text-dark py-3 px-4 ms-2">Upgrade To Premium (if you haven't)</a>
           </p>
         </div>
         <!-- /.col-lg-7 -->
@@ -783,42 +444,34 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               Our Agents
             </h2>
             <p class="text-black-50">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-              enim pariatur similique debitis vel nisi qui reprehenderit totam?
-              Quod maiores.
+              EstateConnect partners with verified local agents to deliver secure, transparent property transactions across Ghana. Our platform integrates title verification and clear documentation so agents can confidently support buyers and sellers through every step.
             </p>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
             <div class="h-100 person">
-              <img
-                src="images/person_1-min.jpg"
-                alt="Image"
-                class="img-fluid"
-              />
+              <img src="images/agent1.jpg" alt="James Doe" class="img-fluid" />
 
               <div class="person-contents">
-                <h2 class="mb-0"><a href="#">James Doe</a></h2>
+                <h2 class="mb-0"><a href="#">Kojo Asante</a></h2>
                 <span class="meta d-block mb-3">Real Estate Agent</span>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Facere officiis inventore cumque tenetur laboriosam, minus
-                  culpa doloremque odio, neque molestias?
+                  EstateConnect's verification tools and clear title reports make it easy to advise clients with confidence. The streamlined process reduces delays and helps me close deals faster.
                 </p>
 
                 <ul class="social list-unstyled list-inline dark-hover">
                   <li class="list-inline-item">
-                    <a href="#"><span class="icon-twitter"></span></a>
+                    <a href="https://x.com/_hatung_Imana" target="_blank" rel="noopener noreferrer"><span class="icon-twitter"></span></a>
                   </li>
                   <li class="list-inline-item">
-                    <a href="#"><span class="icon-facebook"></span></a>
+                    <a href="https://www.facebook.com/hatungimana.ericson/" target="_blank" rel="noopener noreferrer"><span class="icon-facebook"></span></a>
                   </li>
                   <li class="list-inline-item">
-                    <a href="#"><span class="icon-linkedin"></span></a>
+                    <a href="https://www.linkedin.com/in/eric-hatungimana/" target="_blank" rel="noopener noreferrer"><span class="icon-linkedin"></span></a>
                   </li>
                   <li class="list-inline-item">
-                    <a href="#"><span class="icon-instagram"></span></a>
+                    <a href="https://www.instagram.com/hatung.imana/" target="_blank" rel="noopener noreferrer"><span class="icon-instagram"></span></a>
                   </li>
                 </ul>
               </div>
@@ -826,19 +479,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           </div>
           <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
             <div class="h-100 person">
-              <img
-                src="images/person_2-min.jpg"
-                alt="Image"
-                class="img-fluid"
-              />
+              <img src="images/agent2.jpeg" alt="Akua Boateng" class="img-fluid" />
 
               <div class="person-contents">
                 <h2 class="mb-0"><a href="#">Akua Boateng</a></h2>
                 <span class="meta d-block mb-3">Real Estate Agent</span>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Facere officiis inventore cumque tenetur laboriosam, minus
-                  culpa doloremque odio, neque molestias?
+                  Working with EstateConnect has increased client trust—ownership checks and transparent listings remove uncertainty. Their agent tools and responsive support simplify coordination and closings.
                 </p>
 
                 <ul class="social list-unstyled list-inline dark-hover">
@@ -860,19 +507,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           </div>
           <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
             <div class="h-100 person">
-              <img
-                src="images/person_3-min.jpg"
-                alt="Image"
-                class="img-fluid"
-              />
+              <img src="images/agent3.jpg" alt="Afua Ofori" class="img-fluid" />
 
               <div class="person-contents">
                 <h2 class="mb-0"><a href="#">Afua Ofori</a></h2>
                 <span class="meta d-block mb-3">Real Estate Agent</span>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Facere officiis inventore cumque tenetur laboriosam, minus
-                  culpa doloremque odio, neque molestias?
+                  EstateConnect provides reliable documentation and responsive support, which simplifies negotiations and makes closings more predictable. I recommend it to agents who want secure, efficient transactions.
                 </p>
 
                 <ul class="social list-unstyled list-inline dark-hover">
@@ -907,13 +548,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
     </div>
     <!-- /.site-footer -->
 
-    <!-- Preloader -->
-    <div id="overlayer"></div>
-    <div class="loader">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+    <!-- Duplicate preloader removed; preloader is disabled earlier in the file -->
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tiny-slider.js"></script>
@@ -922,5 +557,21 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
     <script src="js/counter.js"></script>
     <script src="js/custom.js"></script>
     <script src="js/localize.js"></script>
+    <script>
+      // Premium upgrade button handler
+      (function(){
+        const btn = document.getElementById('upgradePremiumBtn');
+        if (!btn) return;
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          const msg = 'Please note that you will receive a Premium Seller ID that you will use for certain functions and you will have to pay a fee of GHS 500.\n\nProceed -- cancel';
+          if (confirm(msg)) {
+            // Redirect to the Paystack payment link
+            window.location.href = 'https://paystack.shop/pay/ii0nysn-0k';
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
+

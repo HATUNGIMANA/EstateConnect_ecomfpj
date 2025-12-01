@@ -84,36 +84,36 @@ try {
       </div>
 
       <div class="row">
-        <div class="col-lg-6">
-          <div class="admin-panel">
-            <h4>Pending Seller Verifications</h4>
-            <?php if (empty($pending)): ?>
-              <p>No pending verifications.</p>
-            <?php else: ?>
-              <div class="table-responsive">
-              <table class="table table-striped">
-                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Action</th></tr></thead>
-                <tbody>
-                <?php foreach ($pending as $u): ?>
-                  <tr>
-                    <td><?php echo htmlspecialchars($u['user_id']); ?></td>
-                    <td><?php echo htmlspecialchars($u['full_name']); ?></td>
-                    <td><?php echo htmlspecialchars($u['email']); ?></td>
-                    <td><?php echo htmlspecialchars($u['phone_number']); ?></td>
-                    <td>
-                      <form method="post" action="../actions/verify_seller.php" onsubmit="return confirm('Approve seller?');">
-                        <input type="hidden" name="seller_id" value="<?php echo intval($u['user_id']); ?>">
-                        <button class="btn btn-sm btn-success" type="submit">Approve</button>
-                      </form>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-                </tbody>
-              </table>
+            <div class="col-lg-6">
+              <div class="admin-panel">
+                <h4>Pending Seller Verifications</h4>
+                <?php if (empty($pending)): ?>
+                  <p>No pending verifications.</p>
+                <?php else: ?>
+                  <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Action</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($pending as $u): ?>
+                      <tr>
+                        <td><?php echo htmlspecialchars($u['user_id']); ?></td>
+                        <td><?php echo htmlspecialchars($u['full_name']); ?></td>
+                        <td><?php echo htmlspecialchars($u['email']); ?></td>
+                        <td><?php echo htmlspecialchars($u['phone_number']); ?></td>
+                        <td>
+                          <form method="post" action="../actions/verify_seller.php" onsubmit="return confirm('Approve seller?');">
+                            <input type="hidden" name="seller_id" value="<?php echo intval($u['user_id']); ?>">
+                            <button class="btn btn-sm btn-success" type="submit">Approve</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                  </table>
+                  </div>
+                <?php endif; ?>
               </div>
-            <?php endif; ?>
-          </div>
-        </div>
+            </div>
 
         <div class="col-lg-6">
           <div class="admin-panel">
@@ -149,6 +149,58 @@ try {
               </tbody>
             </table>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="admin-panel">
+            <h4>Pending Agent Applications</h4>
+            <?php
+              // load pending agent requests
+              require_once __DIR__ . '/../controllers/agent_controller.php';
+              $agentReqs = [];
+              try {
+                $agentReqs = get_pending_agent_requests();
+              } catch (Exception $e) {
+                echo '<div class="alert alert-warning">Could not load agent requests: ' . htmlspecialchars($e->getMessage()) . '</div>';
+              }
+            ?>
+            <?php if (empty($agentReqs)): ?>
+              <p>No pending agent applications.</p>
+            <?php else: ?>
+              <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                  <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Submitted</th><th>Docs</th><th>Action</th></tr></thead>
+                  <tbody>
+                    <?php foreach ($agentReqs as $r): ?>
+                      <tr>
+                        <td><?php echo intval($r['id']); ?></td>
+                        <td><?php echo htmlspecialchars($r['full_name']); ?></td>
+                        <td><?php echo htmlspecialchars($r['email']); ?></td>
+                        <td><?php echo htmlspecialchars($r['phone']); ?></td>
+                        <td><?php echo htmlspecialchars($r['created_at']); ?></td>
+                        <td>
+                          <?php if (!empty($r['id_upload'])): ?><a href="../<?php echo htmlspecialchars($r['id_upload']); ?>" target="_blank">ID</a><?php endif; ?>
+                          <?php if (!empty($r['licence_upload'])): ?> | <a href="../<?php echo htmlspecialchars($r['licence_upload']); ?>" target="_blank">Licence</a><?php endif; ?>
+                        </td>
+                        <td>
+                          <form method="post" action="../actions/approve_agent.php" style="display:inline-block;margin-right:6px;">
+                            <input type="hidden" name="id" value="<?php echo intval($r['id']); ?>">
+                            <button class="btn btn-sm btn-success" type="submit" onclick="return confirm('Approve this agent application?');">Approve</button>
+                          </form>
+                          <form method="post" action="../actions/reject_agent.php" style="display:inline-block;">
+                            <input type="hidden" name="id" value="<?php echo intval($r['id']); ?>">
+                            <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Reject this agent application?');">Reject</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>

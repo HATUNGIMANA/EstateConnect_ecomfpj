@@ -1,13 +1,13 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-// Require login and verified seller
+// Page is open for adding properties (no verification required)
+// Optional: require login by uncommenting the lines below
+/*
 if (!isset($_SESSION['user_id'])) {
   header('Location: ../login_Register/login.php');
   exit;
 }
-if (!isset($_SESSION['is_verified']) || intval($_SESSION['is_verified']) === 0) {
-  die('You must be verified to list properties.');
-}
+*/
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,9 +49,8 @@ if (!isset($_SESSION['is_verified']) || intval($_SESSION['is_verified']) === 0) 
               <li class="has-children">
                 <a href="../properties.php">Properties</a>
                 <ul class="dropdown">
-                  <li><a href="#">Buy</a></li>
-                  <li><a href="#">Sell</a></li>
-                  <!-- Removed extra 'Dropdown' submenu -->
+                  <li><a href="/Ecommerce/Final_Project/EstateConnect/properties.php">Buy</a></li>
+                  <li><a href="/Ecommerce/Final_Project/EstateConnect/actions/add_property.php">Sell</a></li>
                 </ul>
               </li>
               <li><a href="../services.php">Services</a></li>
@@ -153,6 +152,7 @@ if (!isset($_SESSION['is_verified']) || intval($_SESSION['is_verified']) === 0) 
               <div class="form-group text-end">
                 <button type="submit" class="btn btn-primary">Add Property</button>
                 <a href="../properties.php" class="btn btn-secondary">Cancel</a>
+                <button type="button" id="addPremiumBtn" class="btn btn-warning">Add as premium seller</button>
               </div>
             </form>
           </div>
@@ -225,6 +225,32 @@ if (!isset($_SESSION['is_verified']) || intval($_SESSION['is_verified']) === 0) 
           preview.innerHTML = '';
           form.classList.remove('was-validated');
         }, false);
+
+        // When user chooses to add as premium seller, save textual form values to localStorage
+        const addPremiumBtn = document.getElementById('addPremiumBtn');
+        if (addPremiumBtn) {
+          addPremiumBtn.addEventListener('click', function(){
+            const data = {
+              title: document.getElementById('title').value || '',
+              description: document.getElementById('description').value || '',
+              type: document.getElementById('type').value || '',
+              price: document.getElementById('price').value || '',
+              location: document.getElementById('location').value || '',
+              beds: document.getElementById('beds').value || '',
+              baths: document.getElementById('baths').value || '',
+              area: document.getElementById('area').value || '',
+              amenities: document.getElementById('amenities').value || '',
+              availability: document.getElementById('availability').value || ''
+            };
+            try {
+              localStorage.setItem('pending_property', JSON.stringify(data));
+            } catch (err) {
+              console.error('Could not save property to localStorage', err);
+            }
+            // Redirect to premium flow page (same folder)
+            window.location.href = 'add_property_premium.php';
+          });
+        }
       })();
     </script>
   </body>

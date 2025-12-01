@@ -9690,9 +9690,12 @@ textarea {
     z-index: 2; }
   .hero .heading {
     color: #fff;
-    font-size: clamp(1.5rem, 2.5vw, 2.5rem);
-    margin-bottom: 30px;
-    font-weight: 600; }
+    /* Reduced size for long hero paragraph and tighter spacing */
+    font-size: clamp(1rem, 1.6vw, 1.4rem);
+    line-height: 1.08;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
   .hero .lead {
     color: #fff;
     font-size: 14px;

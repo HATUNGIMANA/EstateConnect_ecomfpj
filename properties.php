@@ -3,6 +3,10 @@ session_start();
 if (!isset($_SESSION['cart'])) { $_SESSION['cart'] = []; }
 $cart_count = 0;
 foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it['qty'] : 0; }
+// Helper to render a random price between GHS 10,000 and GHS 50,000
+function random_price_display() {
+  return 'GHS ' . number_format(rand(10000, 50000));
+}
 ?>
 <!-- /*
 * Template Name: EstateConnect
@@ -54,15 +58,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           <div class="site-navigation">
             <a href="index.php" class="logo m-0 float-start">EstateConnect</a>
 
-            <ul
-              class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end"
-            >
+            <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
               <li><a href="index.php">Home</a></li>
               <li class="has-children active">
                 <a href="properties.php">Properties</a>
                 <ul class="dropdown">
                   <li><a href="#">Buy</a></li>
-                  <li><a href="#">Sell</a></li>
+                  <li><a href="actions/add_property.php">Sell</a></li>
                   <!-- Removed extra 'Dropdown' submenu -->
                 </ul>
               </li>
@@ -71,6 +73,13 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
               <li>
                 <a href="cart.php"><span class="icon-shopping_cart"></span> Cart<?php if($cart_count>0) echo ' (' . $cart_count . ')'; ?></a>
               </li>
+              <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                <li class="cta-button"><a href="login_Register/logout.php" class="btn btn-outline-danger" onclick="return confirm('Do you really want to log out?');">Logout</a></li>
+                <li class="cta-button"><a href="login_Register/profile_edit.php" class="btn btn-success">Edit Profile</a></li>
+              <?php else: ?>
+                <li class="cta-button"><a href="login_Register/login.php" class="btn btn-success">Login</a></li>
+                <li class="cta-button"><a href="login_Register/register.php" class="btn btn-outline-success">Register</a></li>
+              <?php endif; ?>
             </ul>
 
             <a
@@ -117,6 +126,14 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
 
     <div class="section">
       <div class="container">
+        <?php if (!empty($_SESSION['property_success'])): ?>
+          <div class="alert alert-success text-center"><?php echo htmlspecialchars($_SESSION['property_success']); unset($_SESSION['property_success']); ?></div>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['property_error'])): ?>
+          <div class="alert alert-danger text-center"><?php echo htmlspecialchars($_SESSION['property_error']); unset($_SESSION['property_error']); ?></div>
+        <?php endif; ?>
+      </div>
+      <div class="container">
         <div class="row mb-5 align-items-center">
           <div class="col-lg-6 text-center mx-auto">
             <h2 class="font-weight-bold text-primary heading">
@@ -134,7 +151,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </a>
 
                   <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                    <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                     <div>
                       <span class="d-block mb-2 text-black-50"
                         >21 Osu Oxford St.</span
@@ -153,7 +170,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                       </div>
 
                       <a
-                        href="property-single.php"
+                        href="property-single.php?id=10"
                         class="btn btn-primary py-2 px-3"
                         >See details</a
                       >
@@ -168,7 +185,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </a>
 
                   <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                    <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                     <div>
                       <span class="d-block mb-2 text-black-50"
                         >14 Kejetia Rd.</span
@@ -187,7 +204,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                       </div>
 
                       <a
-                        href="property-single.php"
+                        href="property-single.php?id=11"
                         class="btn btn-primary py-2 px-3"
                         >See details</a
                       >
@@ -202,7 +219,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </a>
 
                   <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                    <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                     <div>
                       <span class="d-block mb-2 text-black-50"
                         >7 Tamale Rd., Sakasaka</span
@@ -221,7 +238,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                       </div>
 
                       <a
-                        href="property-single.php"
+                        href="property-single.php?id=12"
                         class="btn btn-primary py-2 px-3"
                         >See details</a
                       >
@@ -236,7 +253,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </a>
 
                   <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                    <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                     <div>
                       <span class="d-block mb-2 text-black-50"
                         >44 Beach Rd., Dixcove</span
@@ -255,7 +272,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                       </div>
 
                       <a
-                        href="property-single.php"
+                        href="property-single.php?id=13"
                         class="btn btn-primary py-2 px-3"
                         >See details</a
                       >
@@ -270,7 +287,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </a>
 
                   <div class="property-content">
-                    <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                    <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                     <div>
                       <span class="d-block mb-2 text-black-50"
                         >10 Cape Coast St.</span
@@ -289,7 +306,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                       </div>
 
                       <a
-                        href="property-single.php"
+                        href="property-single.php?id=14"
                         class="btn btn-primary py-2 px-3"
                         >See details</a
                       >
@@ -331,12 +348,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <div class="property-item mb-30">
-              <a href="property-single.php" class="img">
+                    <a href="property-single.php?id=15" class="img">
                 <img src="images/img_1.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>GHS 1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -355,7 +372,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </div>
 
                   <a
-                    href="property-single.php"
+                        href="property-single.php?id=16"
                     class="btn btn-primary py-2 px-3"
                     >See details</a
                   >
@@ -366,12 +383,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <div class="property-item mb-30">
-              <a href="property-single.php" class="img">
+              <a href="property-single.php?id=17" class="img">
                 <img src="images/img_2.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -390,7 +407,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </div>
 
                   <a
-                    href="property-single.php"
+                    href="property-single.php?id=18"
                     class="btn btn-primary py-2 px-3"
                     >See details</a
                   >
@@ -401,12 +418,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <div class="property-item mb-30">
-              <a href="property-single.php" class="img">
+              <a href="property-single.php?id=19" class="img">
                 <img src="images/img_3.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -425,7 +442,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </div>
 
                   <a
-                    href="property-single.php"
+                    href="property-single.php?id=20"
                     class="btn btn-primary py-2 px-3"
                     >See details</a
                   >
@@ -437,12 +454,12 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
 
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
             <div class="property-item mb-30">
-              <a href="property-single.php" class="img">
+              <a href="property-single.php?id=21" class="img">
                 <img src="images/img_4.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -461,7 +478,7 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                   </div>
 
                   <a
-                    href="property-single.php"
+                    href="property-single.php?id=22"
                     class="btn btn-primary py-2 px-3"
                     >See details</a
                   >
@@ -476,8 +493,8 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <img src="images/img_5.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -511,8 +528,8 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <img src="images/img_6.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -547,8 +564,8 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <img src="images/img_7.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -582,8 +599,8 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <img src="images/img_8.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -617,8 +634,8 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
                 <img src="images/img_1.jpg" alt="Image" class="img-fluid" />
               </a>
 
-              <div class="property-content">
-                <div class="price mb-2"><span>$1,291,000</span></div>
+                <div class="property-content">
+                <div class="price mb-2"><span><?php echo random_price_display(); ?></span></div>
                 <div>
                   <span class="d-block mb-2 text-black-50"
                     >21 Osu Oxford St.</span
@@ -672,9 +689,9 @@ foreach ($_SESSION['cart'] as $it) { $cart_count += isset($it['qty']) ? (int)$it
       </div>
       <!-- /.site-footer -->
 
-    <!-- Preloader -->
-    <div id="overlayer"></div>
-    <div class="loader">
+    <!-- Preloader disabled to avoid blocking when JS errors occur -->
+    <div id="overlayer" style="display:none"></div>
+    <div class="loader" style="display:none">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>

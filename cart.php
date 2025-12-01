@@ -25,7 +25,13 @@ foreach ($_SESSION['cart'] as $it) {
             <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
               <li><a href="index.php">Home</a></li>
               <li><a href="properties.php">Properties</a></li>
-              <li><a href="cart.php">Cart<?php if($cart_count>0) echo ' (' . $cart_count . ')'; ?></a></li>
+              <li><a href="cart.php"><span class="icon-shopping_cart"></span> Cart<?php if($cart_count>0) echo ' (' . $cart_count . ')'; ?></a></li>
+              <?php if (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                <!-- Auth action buttons intentionally hidden on the cart page -->
+              <?php else: ?>
+                <li class="cta-button"><a href="login_Register/login.php" class="btn btn-success">Login</a></li>
+                <li class="cta-button"><a href="login_Register/register.php" class="btn btn-outline-success">Register</a></li>
+              <?php endif; ?>
             </ul>
           </div>
         </div>
@@ -67,11 +73,27 @@ foreach ($_SESSION['cart'] as $it) {
         </table>
 
         <div class="d-flex gap-2">
-          <a href="actions/empty_cart.php" class="btn btn-danger">Empty Cart</a>
-          <form method="post" action="actions/proceed_to_payment.php">
-            <button type="submit" class="btn btn-success">Proceed to Payment</button>
+          <a href="actions/empty_cart.php" class="btn btn-danger" onclick="return confirm('Are you sure you want to empty the cart?');">Empty Cart</a>
+          <form id="proceedPaymentForm" method="post" action="actions/proceed_to_payment.php">
+            <button type="button" id="proceedBtn" class="btn btn-success">Proceed to Payment</button>
           </form>
         </div>
+        <script>
+          (function(){
+            var btn = document.getElementById('proceedBtn');
+            var form = document.getElementById('proceedPaymentForm');
+            if(btn && form){
+              btn.addEventListener('click', function(e){
+                var msg = 'Proceed to payment?\n\nPlease note that the seller will reach out within 3 hours!\n\nThanks for trusting us!';
+                if (confirm(msg)) {
+                  form.submit();
+                } else {
+                  // user cancelled; do nothing
+                }
+              });
+            }
+          })();
+        </script>
       <?php endif; ?>
     </div>
   </body>

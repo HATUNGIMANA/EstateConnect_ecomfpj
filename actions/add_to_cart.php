@@ -1,5 +1,18 @@
 <?php
 session_start();
+
+// Require login before allowing add-to-cart
+if (empty($_SESSION['user'])) {
+    // Save a message to be shown on the login page
+    $_SESSION['login_error'] = 'Login First to proceed';
+    // Remember where the user came from so we can return after login
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        $_SESSION['after_login_redirect'] = $_SERVER['HTTP_REFERER'];
+    }
+    header('Location: ../login_Register/login.php');
+    exit;
+}
+
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
